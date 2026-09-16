@@ -100,7 +100,8 @@ function renderIcon(name, x, y, index, size, radius, bg, bgcolor) {
   const clipId = `clip-${index}`;
 
   const innerSvg =
-    `<svg x="${PADDING}" y="${PADDING}" width="${size}" height="${size}" ` +
+    `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" ` +
+    `x="${PADDING}" y="${PADDING}" width="${size}" height="${size}" ` +
     `viewBox="${icon.viewBox}" preserveAspectRatio="xMidYMid meet">${icon.content}</svg>`;
 
   if (!bg) {
@@ -150,7 +151,8 @@ function buildSvg(names, perline, size, gap, radius, bg, bgcolor) {
   });
 
   return `
-    <svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"
+    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+         width="${width}" height="${height}"
          viewBox="0 0 ${width} ${height}" fill="none">
       ${parts.join('')}
     </svg>
