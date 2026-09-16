@@ -38,6 +38,62 @@ function extractInner(raw) {
   return raw.slice(openTagEnd + 1, closeTagStart).trim();
 }
 
+/**
+ * Escape special regex characters in a string.
+ */
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
+ * Namespace all IDs inside an icon to prevent collisions when
+ * multiple icons are combined into a single SVG.
+ *
+ * For each id="foo", renames it to id="<prefix>foo" and updates
+ * all references: url(#foo), xlink:href="#foo", href="#foo".
+ *
+ * Prefix format: "i-<iconname>-"
+ */
+function namespaceIds(content, prefix) {
+  const idMatches = [...content.matchAll(/\bid=["']([^"']+)["']/g)];
+  const ids = [...new Set(idMatches.map((m) => m[1]))];
+  
+  if (ids.length === 0) return content;
+  
+  let result = content;
+  
+  for (const id of ids) {
+    const escaped = escapeRegex(id);
+    const newId = `${prefix}${id}`;
+    
+    // 1. Rename the definition itself
+    result = result.replace(
+      new RegExp(`\\bid=["']${escaped}["']`, 'g'),
+      `id="${newId}"`
+    );
+    
+    // 2. Update url(#id) references (fills, clip-paths, masks, filters)
+    result = result.replace(
+      new RegExp(`url\\(\\s*#${escaped}\\s*\\)`, 'g'),
+      `url(#${newId})`
+    );
+    
+    // 3. Update xlink:href="#id" (SVG 1.1)
+    result = result.replace(
+      new RegExp(`xlink:href=["']#${escaped}["']`, 'g'),
+      `xlink:href="#${newId}"`
+    );
+    
+    // 4. Update href="#id" (SVG 2.0)
+    result = result.replace(
+      new RegExp(`\\bhref=["']#${escaped}["']`, 'g'),
+      `href="#${newId}"`
+    );
+  }
+  
+  return result;
+}
+
 // Read all SVG files from the icons directory
 const icons = {};
 const files = fs.readdirSync(iconsDir);
@@ -50,13 +106,18 @@ for (const file of files) {
   const raw = fs.readFileSync(path.join(iconsDir, file), 'utf8');
   
   const viewBox = extractViewBox(raw);
-  const content = extractInner(raw);
+  let content = extractInner(raw);
   
   if (!content) {
     console.warn(`⚠️  Skipped "${file}": unable to parse SVG content.`);
     skipped++;
     continue;
   }
+  
+  // Namespace all IDs inside this icon to prevent collisions
+  // when multiple icons are combined into a single SVG.
+  const prefix = `i-${name}-`;
+  content = namespaceIds(content, prefix);
   
   // Store only viewBox and inner content — not the full file
   icons[name] = { viewBox, content };
@@ -67,5 +128,4 @@ fs.writeFileSync(path.join(distDir, 'icons.json'), JSON.stringify(icons));
 
 console.log(`✅ Generated ${Object.keys(icons).length} icons`);
 if (skipped) {
-  console.log(`   (Skipped ${skipped} file${skipped !== 1 ? 's' : ''} — check warnings above)`);
-}
+  console.log(`   (Skipped ${skipped} file${skipped !== 1 ? 's' : ''} — check warnings above)`);}
