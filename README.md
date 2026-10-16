@@ -10,6 +10,7 @@
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-C071FF?style=for-the-badge&logo=googlechrome&logoColor=white)](https://charmly-dev.web.app/)
 [![License](https://img.shields.io/badge/License-MIT-C071FF?style=for-the-badge&logo=opensourceinitiative&logoColor=white)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/amrelmahdy001/charmly?style=for-the-badge&color=C071FF&logo=github&logoColor=white)](https://github.com/amrelmahdy001/charmly/stargazers)
+[![Changelog](https://img.shields.io/badge/Changelog-C071FF?style=for-the-badge&logo=keepachangelog&logoColor=white)](CHANGELOG.md)
 
 </div>
 
@@ -99,6 +100,7 @@ Simply replace `i=` with comma-separated icon names:
 
 ## Features
 
+✅ **1,028+ Icons** — Wide coverage of tech stacks  
 ✅ **Dynamic SVG Generation** — Icons generated on-demand  
 ✅ **Highly Customizable** — Size, spacing, colors, and layout  
 ✅ **Rate Limited** — 100 requests per minute per IP  
@@ -357,7 +359,10 @@ Simply replace `i=` with comma-separated icon names:
 
 1. Icon SVGs stored in `icons/` folder
 2. `build-icons.js` extracts SVG data to `dist/icons.json`
-3. Cloudflare Worker generates customized SVG on-demand
+3. Cloudflare Worker generates customized SVG on-demand:
+   - `src/worker.js` — routing and rate limiting
+   - `src/icons.js` — icon rendering
+   - `src/utils.js` — shared helpers
 4. Parameters control size, spacing, colors, and layout
 5. Response cached for 60 seconds
 
@@ -376,6 +381,15 @@ Contributions welcome! To suggest an icon:
 MIT License — See [LICENSE](LICENSE) for details.
 
 Icons are trademarks of their respective owners — See [NOTICE.md](NOTICE.md).
+
+---
+
+## Links
+
+- [Full Icon List](ICONS.md)
+- [Changelog](CHANGELOG.md)
+- [Third-Party Notices](NOTICE.md)
+- [License](LICENSE)
 
 ---
 
