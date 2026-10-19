@@ -44,3 +44,24 @@ export function validateBoolean(paramValue, defaultValue) {
   if (lower === 'false') return false;
   return null;
 }
+
+// Blend two hex colors. t=0 → colorA, t=1 → colorB
+export function interpolateHex(colorA, colorB, t) {
+  const a = colorA.replace('#', '');
+  const b = colorB.replace('#', '');
+  const ar = parseInt(a.slice(0, 2), 16);
+  const ag = parseInt(a.slice(2, 4), 16);
+  const ab = parseInt(a.slice(4, 6), 16);
+  const br = parseInt(b.slice(0, 2), 16);
+  const bg = parseInt(b.slice(2, 4), 16);
+  const bb = parseInt(b.slice(4, 6), 16);
+  const r = Math.round(ar + (br - ar) * t);
+  const g = Math.round(ag + (bg - ag) * t);
+  const bl = Math.round(ab + (bb - ab) * t);
+  return (
+    '#' +
+    r.toString(16).padStart(2, '0') +
+    g.toString(16).padStart(2, '0') +
+    bl.toString(16).padStart(2, '0')
+  );
+}

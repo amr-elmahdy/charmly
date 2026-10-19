@@ -2,8 +2,9 @@
 // Card generation — entry point
 // ============================================================
 
-import { escapeXml } from '../utils.js';
+import { escapeXml, interpolateHex } from '../utils.js';
 import { parseColors } from './colors.js';
+import { renderImage, validateMergeMode } from './image.js';
 import {
   computeLayout,
   validateSize,
@@ -21,42 +22,71 @@ const FONT_STACK =
 // ============================================================
 
 // Generate card SVG
-export function generateCard({ title, size, imageSize, corner, colour }) {
-  // Validate title
+export function generateCard({
+  title,
+  size,
+  imageSize,
+  corner,
+  colour,
+  img,
+  imgmerge,
+}) {
+  // Validate required
   if (!title || title.trim() === '') {
     return { error: 'Missing required parameter: title' };
   }
-  
+
+  if (!img || img.trim() === '') {
+    return { error: 'Missing required parameter: img' };
+  }
+
   // Validate options
   const vSize = validateSize(size);
   if (vSize === null) {
     return { error: 'Invalid "size" parameter. Must be one of: s, m, l' };
   }
-  
+
   const vImageSize = validateImageSize(imageSize);
   if (vImageSize === null) {
     return {
       error: 'Invalid "imagewidth" parameter. Must be one of: s, m, l, xl',
     };
   }
-  
+
   const vCorner = validateCorner(corner);
   if (vCorner === null) {
-    return { error: 'Invalid "corner" parameter. Must be one of: sharp, smooth' };
+    return {
+      error: 'Invalid "corner" parameter. Must be one of: sharp, smooth',
+    };
   }
-  
+
+  const vMerge = validateMergeMode(imgmerge);
+  if (vMerge === null) {
+    return {
+      error:
+        'Invalid "imagermerge" parameter. Must be one of: cut, line, smooth',
+    };
+  }
+
   const colors = parseColors(colour);
   if (colors === null) {
     return { error: 'Invalid "colour" parameter. Must be hex or hex,hex' };
   }
-  
+
   // Compute layout
   const layout = computeLayout({ size: vSize, imageSize: vImageSize });
   const radius = CORNER_RADII[vCorner];
-  
+
   // Compose SVG
-  const svg = composeSvg({ layout, colors, radius, title });
-  
+  const svg = composeSvg({
+    layout,
+    colors,
+    radius,
+    title,
+    imageUrl: img,
+    mergeMode: vMerge,
+  });
+
   return { svg };
 }
 
@@ -64,15 +94,42 @@ export function generateCard({ title, size, imageSize, corner, colour }) {
 // Internal: SVG composition
 // ============================================================
 
-function composeSvg({ layout, colors, radius, title }) {
-  const { totalWidth, totalHeight, contentX, contentWidth, titleBaseline } =
-  layout;
-  
+function composeSvg({
+  layout,
+  colors,
+  radius,
+  title,
+  imageUrl,
+  mergeMode,
+}) {
+  const {
+    totalWidth,
+    totalHeight,
+    contentX,
+    contentWidth,
+    titleBaseline,
+    imageWidth,
+  } = layout;
+
   const safeTitle = truncateToWidth(title, contentWidth, 24);
   const gradientStops =
     `<stop offset="0%" stop-color="${escapeXml(colors[0])}"/>` +
     `<stop offset="100%" stop-color="${escapeXml(colors[1])}"/>`;
-  
+
+  // Panel color at image edge
+  const panelColorAtImageEdge = interpolateHex(
+    colors[0],
+    colors[1],
+    imageWidth / totalWidth
+  );
+
+  const imageSvg = renderImage({
+    imageUrl,
+    imageWidth,
+    mergeMode,
+    panelColor: panelColorAtImageEdge,
+  });
+
   return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
   width="${totalWidth}" height="${totalHeight}"
   viewBox="0 0 ${totalWidth} ${totalHeight}">
@@ -86,6 +143,7 @@ function composeSvg({ layout, colors, radius, title }) {
   </defs>
   <g clip-path="url(#cardClip)">
     <rect width="${totalWidth}" height="${totalHeight}" fill="url(#cardBg)"/>
+    ${imageSvg}
     <text x="${contentX}" y="${titleBaseline}"
       font-family="${FONT_STACK}" font-size="24" font-weight="700"
       fill="#ffffff">${escapeXml(safeTitle)}</text>
