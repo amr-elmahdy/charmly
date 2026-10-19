@@ -1,14 +1,23 @@
 // ============================================================
-// Shared utility functions used across the project.
-// Pure helpers only — no side effects, no state.
+// Shared utility functions
 // ============================================================
 
-// Escape a string for safe use inside an SVG attribute.
+// Escape for SVG attributes
 export function escapeAttr(str) {
   return String(str).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 }
 
-// Validate a numeric query param against [min, max].
+// Escape for XML text/attributes
+export function escapeXml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
+}
+
+// Validate numeric param against [min, max]
 export function validateNumber(paramValue, min, max, defaultValue) {
   if (paramValue === null) return defaultValue;
   const trimmed = paramValue.trim();
@@ -19,7 +28,7 @@ export function validateNumber(paramValue, min, max, defaultValue) {
   return num;
 }
 
-// Validate a hex color string (3 or 6 hex digits, with or without #).
+// Validate hex color (3 or 6 digits, optional #)
 export function validateHexColor(color) {
   if (color === null) return null;
   const trimmed = color.trim().replace(/^#/, '');
@@ -27,7 +36,7 @@ export function validateHexColor(color) {
   return `#${trimmed}`;
 }
 
-// Validate a boolean-ish query param ("true"/"false", case-insensitive).
+// Validate boolean param ("true"/"false")
 export function validateBoolean(paramValue, defaultValue) {
   if (paramValue === null) return defaultValue;
   const lower = paramValue.trim().toLowerCase();
