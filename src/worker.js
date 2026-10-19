@@ -77,7 +77,7 @@ function getParam(params, fullName, shortName) {
 export default {
   async fetch(request) {
     const url = new URL(request.url);
-
+    
     // Rate limiting
     const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
     if (isRateLimited(ip)) {
@@ -89,7 +89,7 @@ export default {
         },
       });
     }
-
+    
     // Route: /card
     if (url.pathname === '/card') {
       const title = (getParam(url.searchParams, 'title', 't') || '').trim();
@@ -97,19 +97,39 @@ export default {
       const imageSize = getParam(url.searchParams, 'imagewidth', 'iw');
       const corner = getParam(url.searchParams, 'corner', 'co');
       const colour = getParam(url.searchParams, 'colour', 'c');
-
-      const result = generateCard({ title, size, imageSize, corner, colour });
-
+      const img = (url.searchParams.get('img') || '').trim();
+      const imgmerge = getParam(url.searchParams, 'imagermerge', 'im');
+      const desc = (getParam(url.searchParams, 'desc', 'd') || '').trim();
+      const titleColor = getParam(url.searchParams, 'titlecolor', 'tc');
+      const titleLine = getParam(url.searchParams, 'titleline', 'tl');
+      const descColor = getParam(url.searchParams, 'desccolor', 'dc');
+      const descSize = getParam(url.searchParams, 'descsize', 'ds');
+      
+      const result = generateCard({
+        title,
+        desc,
+        size,
+        imageSize,
+        corner,
+        colour,
+        img,
+        imgmerge,
+        titleColor,
+        titleLine,
+        descColor,
+        descSize,
+      });
+      
       if (result.error) {
         return new Response(result.error, {
           status: 400,
           headers: { 'Content-Type': 'text/plain; charset=utf-8' },
         });
       }
-
+      
       return new Response(result.svg, { headers: svgHeaders(60) });
     }
-
+    
     // Route: /icons
     if (url.pathname === '/icons') {
       const iParam = url.searchParams.get('i') || '';
@@ -117,24 +137,22 @@ export default {
         .split(',')
         .map((s) => s.trim().toLowerCase())
         .filter(Boolean);
-
+      
       if (names.length === 0) {
         return new Response(
-          'Missing "i" query parameter, e.g. ?i=js,html,css',
-          { status: 400 }
+          'Missing "i" query parameter, e.g. ?i=js,html,css', { status: 400 }
         );
       }
-
+      
       if (names.length > MAX_ICONS) {
         return new Response(
-          `Too many icons requested: max ${MAX_ICONS}, got ${names.length}`,
-          { status: 400 }
+          `Too many icons requested: max ${MAX_ICONS}, got ${names.length}`, { status: 400 }
         );
       }
-
+      
       const perlineParam = url.searchParams.get('perline');
       const perline = perlineParam ? parseInt(perlineParam, 10) : 0;
-
+      
       // Validate size
       const size = validateNumber(
         url.searchParams.get('size'),
@@ -144,11 +162,10 @@ export default {
       );
       if (size === null) {
         return new Response(
-          `Invalid "size" parameter: must be a number between ${SIZE_MIN} and ${SIZE_MAX}`,
-          { status: 400 }
+          `Invalid "size" parameter: must be a number between ${SIZE_MIN} and ${SIZE_MAX}`, { status: 400 }
         );
       }
-
+      
       // Validate gap
       const gap = validateNumber(
         url.searchParams.get('gap'),
@@ -158,11 +175,10 @@ export default {
       );
       if (gap === null) {
         return new Response(
-          `Invalid "gap" parameter: must be a number between ${GAP_MIN} and ${GAP_MAX}`,
-          { status: 400 }
+          `Invalid "gap" parameter: must be a number between ${GAP_MIN} and ${GAP_MAX}`, { status: 400 }
         );
       }
-
+      
       // Validate radius
       const radius = validateNumber(
         url.searchParams.get('radius'),
@@ -172,20 +188,18 @@ export default {
       );
       if (radius === null) {
         return new Response(
-          `Invalid "radius" parameter: must be a number between ${RADIUS_MIN} and ${RADIUS_MAX}`,
-          { status: 400 }
+          `Invalid "radius" parameter: must be a number between ${RADIUS_MIN} and ${RADIUS_MAX}`, { status: 400 }
         );
       }
-
+      
       // Validate bg
       const bg = validateBoolean(url.searchParams.get('bg'), DEFAULT_BG);
       if (bg === null) {
         return new Response(
-          'Invalid "bg" parameter: must be "true" or "false"',
-          { status: 400 }
+          'Invalid "bg" parameter: must be "true" or "false"', { status: 400 }
         );
       }
-
+      
       // Validate bgcolor
       let bgcolor = DEFAULT_BGCOLOR;
       if (bg) {
@@ -194,19 +208,18 @@ export default {
           const validated = validateHexColor(bgcolorParam);
           if (validated === null) {
             return new Response(
-              'Invalid "bgcolor" parameter: must be a 3 or 6 digit hex color',
-              { status: 400 }
+              'Invalid "bgcolor" parameter: must be a 3 or 6 digit hex color', { status: 400 }
             );
           }
           bgcolor = validated;
         }
       }
-
+      
       const svg = buildSvg(names, perline, size, gap, radius, bg, bgcolor);
-
+      
       return new Response(svg, { headers: svgHeaders(60) });
     }
-
+    
     // Unknown route
     return new Response('Not found', { status: 404 });
   },

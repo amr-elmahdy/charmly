@@ -45,6 +45,39 @@ export function validateBoolean(paramValue, defaultValue) {
   return null;
 }
 
+// Split text into lines that fit the given character budget.
+// Adds ellipsis to the last line if the text is truncated.
+export function wrapText(text, maxCharsPerLine, maxLines) {
+  if (!text) return [];
+  const words = text.split(/\s+/).filter(Boolean);
+  const lines = [];
+  let current = '';
+  
+  for (const word of words) {
+    const test = current ? current + ' ' + word : word;
+    if (test.length > maxCharsPerLine && current) {
+      lines.push(current);
+      if (lines.length === maxLines) break;
+      current = word;
+    } else {
+      current = test;
+    }
+  }
+  if (current && lines.length < maxLines) lines.push(current);
+  
+  const fullLength = words.join(' ').length;
+  const shownLength = lines.join(' ').length;
+  if (lines.length === maxLines && shownLength < fullLength) {
+    const last = lines[maxLines - 1];
+    lines[maxLines - 1] =
+      last.length > maxCharsPerLine - 3 ?
+      last.substring(0, maxCharsPerLine - 3) + '...' :
+      last + '...';
+  }
+  
+  return lines;
+}
+
 // Blend two hex colors. t=0 → colorA, t=1 → colorB
 export function interpolateHex(colorA, colorB, t) {
   const a = colorA.replace('#', '');
