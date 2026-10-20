@@ -23,6 +23,7 @@ import {
   MAX_ICONS,
 } from './icons.js';
 import { generateCard } from './card/index.js';
+import { fetchImageAsDataUri } from './card/image-fetcher.js';
 
 // Rate limiting
 const RATE_LIMIT_MAX = 100;
@@ -107,7 +108,11 @@ export default {
       const titleLine = getParam(url.searchParams, 'titleline', 'tl');
       const descColor = getParam(url.searchParams, 'desccolor', 'dc');
       const descSize = getParam(url.searchParams, 'descsize', 'ds');
-      
+      let finalImageUrl = img;
+      if (!img.startsWith('data:')) {
+        const dataUri = await fetchImageAsDataUri(img);
+        if (dataUri) finalImageUrl = dataUri;
+      }
       const result = await generateCard({
         title,
         desc,
@@ -115,7 +120,7 @@ export default {
         imageSize,
         corner,
         colour,
-        img,
+        img: finalImageUrl,
         imgmerge,
         titleColor,
         titleLine,
