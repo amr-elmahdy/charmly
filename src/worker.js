@@ -108,7 +108,7 @@ export default {
       const descColor = getParam(url.searchParams, 'desccolor', 'dc');
       const descSize = getParam(url.searchParams, 'descsize', 'ds');
       
-      const result = generateCard({
+      const result = await generateCard({
         title,
         desc,
         size,

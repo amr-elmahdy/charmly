@@ -1,5 +1,9 @@
 // ============================================================
-// Card generation — entry point
+// Card generation — entry point.
+// Composes the final SVG from layout + colors + content + widgets.
+//
+// Commit 5 scope: GitHub API widgets (stars, lan, version).
+// generateCard is now async because it may call the GitHub API.
 // ============================================================
 
 import { escapeXml, interpolateHex } from '../utils.js';
@@ -22,12 +26,13 @@ import {
 } from './layout.js';
 import { parseWidget } from './parser.js';
 import { renderWidget, measureWidget } from './widgets.js';
+import { fetchRepoData, fetchLatestRelease } from './github.js';
 
 // ============================================================
 // Public API
 // ============================================================
 
-export function generateCard({
+export async function generateCard({
   title,
   desc,
   size,
@@ -44,67 +49,69 @@ export function generateCard({
   br,
   bl,
 }) {
-  // Required params
+  // ---- Validate required ----
   if (!title || title.trim() === '') {
     return { error: 'Missing required parameter: title' };
   }
-  
   if (!img || img.trim() === '') {
     return { error: 'Missing required parameter: img' };
   }
-  
-  // Validate options
+
+  // ---- Validate options ----
   const vSize = validateSize(size);
   if (vSize === null) {
     return { error: 'Invalid "size" parameter. Must be one of: s, m, l' };
   }
-  
+
   const vImageSize = validateImageSize(imageSize);
   if (vImageSize === null) {
     return {
       error: 'Invalid "imagewidth" parameter. Must be one of: s, m, l, xl',
     };
   }
-  
+
   const vCorner = validateCorner(corner);
   if (vCorner === null) {
     return {
       error: 'Invalid "corner" parameter. Must be one of: sharp, smooth',
     };
   }
-  
+
   const vMerge = validateMergeMode(imgmerge);
   if (vMerge === null) {
     return {
-      error: 'Invalid "imagermerge" parameter. Must be one of: cut, line, smooth',
+      error:
+        'Invalid "imagermerge" parameter. Must be one of: cut, line, smooth',
     };
   }
-  
+
   const vDescSize = validateDescSize(descSize);
   if (vDescSize === null) {
     return { error: 'Invalid "descsize" parameter. Must be one of: s, m, l' };
   }
-  
+
   const vTitleColor = validateTitleColor(titleColor);
   if (vTitleColor === null) {
     return {
-      error: 'Invalid "titlecolor" parameter. Must be a 3 or 6 digit hex color',
+      error:
+        'Invalid "titlecolor" parameter. Must be a 3 or 6 digit hex color',
     };
   }
-  
+
   const vDescColor = validateDescColor(descColor);
   if (vDescColor === null) {
     return {
-      error: 'Invalid "desccolor" parameter. Must be a 3 or 6 digit hex color',
+      error:
+        'Invalid "desccolor" parameter. Must be a 3 or 6 digit hex color',
     };
   }
-  
+
   const colors = parseColors(colour);
   if (colors === null) {
     return { error: 'Invalid "colour" parameter. Must be hex or hex,hex' };
   }
-  
-  // Parse widgets
+
+  // ---- Parse widgets ----
   const trWidget = parseWidget(tr);
   if (trWidget && trWidget.error) {
     return { error: `"topright": ${trWidget.error}` };
@@ -117,12 +124,19 @@ export function generateCard({
   if (blWidget && blWidget.error) {
     return { error: `"bottomleft": ${blWidget.error}` };
   }
-  
-  // Compute layout
+
+  // ---- Resolve widget data (parallel) ----
+  const [trData, brData, blData] = await Promise.all([
+    resolveWidgetData(trWidget),
+    resolveWidgetData(brWidget),
+    resolveWidgetData(blWidget),
+  ]);
+
+  // ---- Compute ----
   const layout = computeLayout({ size: vSize, imageSize: vImageSize });
   const radius = CORNER_RADII[vCorner];
-  
-  // Compose SVG
+
+  // ---- Compose ----
   const svg = composeSvg({
     layout,
     colors,
@@ -136,11 +150,37 @@ export function generateCard({
     descColor: vDescColor,
     descSize: vDescSize,
     trWidget,
+    trData,
     brWidget,
+    brData,
     blWidget,
+    blData,
   });
-  
+
   return { svg };
+}
+
+// ============================================================
+// Widget data resolver
+// ============================================================
+
+async function resolveWidgetData(widget) {
+  if (!widget) return null;
+
+  if (widget.type === 'state' || widget.type === 'badges') {
+    return null; // static — no data needed
+  }
+
+  if (widget.type === 'stars' || widget.type === 'lan') {
+    return await fetchRepoData(widget.owner, widget.repo);
+  }
+
+  if (widget.type === 'version') {
+    const tag = await fetchLatestRelease(widget.owner, widget.repo);
+    return tag ? { tag } : null;
+  }
+
+  return null;
 }
 
 // ============================================================
@@ -160,8 +200,11 @@ function composeSvg({
   descColor,
   descSize,
   trWidget,
+  trData,
   brWidget,
+  brData,
   blWidget,
+  blData,
 }) {
   const {
     totalWidth,
@@ -177,31 +220,30 @@ function composeSvg({
     widgetsBaseline,
     imageWidth,
   } = layout;
-  
-  // Background gradient
+
   const gradientStops =
     `<stop offset="0%" stop-color="${escapeXml(colors[0])}"/>` +
     `<stop offset="100%" stop-color="${escapeXml(colors[1])}"/>`;
-  
-  // Panel color at image edge
+
   const panelColorAtImageEdge = interpolateHex(
     colors[0],
     colors[1],
     imageWidth / totalWidth
   );
-  
-  // Image
+
   const imageSvg = renderImage({
     imageUrl,
     imageWidth,
     mergeMode,
     panelColor: panelColorAtImageEdge,
   });
-  
-  // Title (width reduced by TR widget)
-  const trWidth = measureWidget(trWidget);
-  const titleMaxWidth = trWidget ? contentWidth - trWidth - 16 : contentWidth;
-  
+
+  // TR width affects title truncation
+  const trWidth = measureWidget(trWidget, trData);
+  const titleMaxWidth = trWidget
+    ? contentWidth - trWidth - 16
+    : contentWidth;
+
   const titleSvg = renderTitle({
     title,
     color: titleColor,
@@ -209,18 +251,16 @@ function composeSvg({
     baseline: titleBaseline,
     maxWidth: titleMaxWidth,
   });
-  
-  // Title underline
-  const titleLineSvg = titleLine ?
-    renderTitleLine({
-      x: contentX,
-      width: contentWidth,
-      y: titleLineY,
-      color: titleColor,
-    }) :
-    '';
-  
-  // Description
+
+  const titleLineSvg = titleLine
+    ? renderTitleLine({
+        x: contentX,
+        width: contentWidth,
+        y: titleLineY,
+        color: titleColor,
+      })
+    : '';
+
   const descSvg = renderDescription({
     desc,
     color: descColor,
@@ -231,33 +271,34 @@ function composeSvg({
     lineHeight: descLineHeight,
     maxLines: descMaxLines,
   });
-  
-  // Widgets
+
   const trSvg = renderWidget({
     widget: trWidget,
+    data: trData,
     anchorX: rightEdge,
     baseline: titleBaseline,
     align: 'end',
     maxWidth: contentWidth,
   });
-  
+
   const brSvg = renderWidget({
     widget: brWidget,
+    data: brData,
     anchorX: rightEdge,
     baseline: widgetsBaseline,
     align: 'end',
     maxWidth: contentWidth * 0.4,
   });
-  
+
   const blSvg = renderWidget({
     widget: blWidget,
+    data: blData,
     anchorX: contentX,
     baseline: widgetsBaseline,
     align: 'start',
     maxWidth: contentWidth * 0.6,
   });
-  
-  // Final SVG
+
   return `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
   width="${totalWidth}" height="${totalHeight}"
   viewBox="0 0 ${totalWidth} ${totalHeight}">

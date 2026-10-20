@@ -10,7 +10,7 @@ export const STATE_VALUES = [
   'in-development',
 ];
 
-const KNOWN_TYPES = ['state', 'badges'];
+const KNOWN_TYPES = ['state', 'badges', 'stars', 'lan', 'version'];
 const MAX_BADGES = 5;
 const MAX_BADGE_LENGTH = 20;
 
@@ -49,6 +49,9 @@ export function parseWidget(str) {
   
   if (type === 'state') return parseState(value);
   if (type === 'badges') return parseBadges(value);
+  if (type === 'stars') return parseRepoWidget('stars', value);
+  if (type === 'lan') return parseRepoWidget('lan', value);
+  if (type === 'version') return parseRepoWidget('version', value);
   
   return { error: 'unknown widget type' };
 }
@@ -91,4 +94,29 @@ function parseBadges(value) {
   }
   
   return { type: 'badges', value: parts };
+}
+
+// Repo widgets (stars, lan, version)
+function parseRepoWidget(type, value) {
+  const parsed = parseRepoString(value);
+  if (!parsed) {
+    return { error: `invalid repo format "${value}". Expected: owner/repo` };
+  }
+  return { type, owner: parsed.owner, repo: parsed.repo };
+}
+
+// Parse "owner/repo"
+function parseRepoString(str) {
+  if (!str) return null;
+  const parts = str.split('/');
+  if (parts.length !== 2) return null;
+  
+  const owner = parts[0].trim();
+  const repo = parts[1].trim();
+  if (!owner || !repo) return null;
+  
+  if (!/^[A-Za-z0-9._-]+$/.test(owner)) return null;
+  if (!/^[A-Za-z0-9._-]+$/.test(repo)) return null;
+  
+  return { owner, repo };
 }
