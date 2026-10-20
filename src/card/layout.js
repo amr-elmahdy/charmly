@@ -101,3 +101,13 @@ export function computeLayout({ size, imageSize }) {
     widgetsBaseline: WIDGETS_BASELINE,
   };
 }
+
+// ============================================================
+// Alignment helper (used by widgets)
+// ============================================================
+
+export function alignX(anchorX, width, align) {
+  if (align === 'end') return anchorX - width;
+  if (align === 'middle') return anchorX - width / 2;
+  return anchorX;
+}

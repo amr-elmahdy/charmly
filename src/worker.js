@@ -99,6 +99,9 @@ export default {
       const colour = getParam(url.searchParams, 'colour', 'c');
       const img = (url.searchParams.get('img') || '').trim();
       const imgmerge = getParam(url.searchParams, 'imagermerge', 'im');
+      const tr = getParam(url.searchParams, 'topright', 'tr');
+      const br = getParam(url.searchParams, 'bottomright', 'br');
+      const bl = getParam(url.searchParams, 'bottomleft', 'bl');
       const desc = (getParam(url.searchParams, 'desc', 'd') || '').trim();
       const titleColor = getParam(url.searchParams, 'titlecolor', 'tc');
       const titleLine = getParam(url.searchParams, 'titleline', 'tl');
@@ -118,6 +121,9 @@ export default {
         titleLine,
         descColor,
         descSize,
+        tr,
+        br,
+        bl,
       });
       
       if (result.error) {
