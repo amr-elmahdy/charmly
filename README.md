@@ -1,16 +1,13 @@
-![banner](./.github/imgs/banner.png)
-
-<a name="readme-top"></a>
 <div align="center">
 
-# Charmly Icons
+![Charmly banner](./.github/imgs/banner.png)
 
-**Generate beautiful skill icons for your GitHub README using a simple URL.**
+# Charmly
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-C071FF?style=for-the-badge&logo=googlechrome&logoColor=white)](https://charmly-dev.web.app/)
-[![License](https://img.shields.io/badge/License-MIT-C071FF?style=for-the-badge&logo=opensourceinitiative&logoColor=white)](LICENSE)
-[![Stars](https://img.shields.io/github/stars/amrelmahdy001/charmly?style=for-the-badge&color=C071FF&logo=github&logoColor=white)](https://github.com/amrelmahdy001/charmly/stargazers)
-[![Changelog](https://img.shields.io/badge/Changelog-C071FF?style=for-the-badge&logo=keepachangelog&logoColor=white)](CHANGELOG.md)
+**Customizable icon rows and project cards for your README — from a single URL.**
+
+[![Version](https://img.shields.io/github/package-json/v/amr-elmahdy/charmly?style=for-the-badge&color=C071FF&logo=semanticrelease&logoColor=white)](https://github.com/amr-elmahdy/charmly/releases)
+[![Stars](https://img.shields.io/github/stars/amr-elmahdy/charmly?style=for-the-badge&color=C071FF&logo=github&logoColor=white)](https://github.com/amr-elmahdy/charmly/stargazers)
 
 </div>
 
@@ -18,379 +15,161 @@
 
 ## What is Charmly?
 
-Charmly is a lightweight API that generates a row of skill icons as an SVG image. Use it in your GitHub profile, project README, or resume — no configuration needed.
+Charmly generates SVG images for your README — a row of skill icons, a project card, or both. Pass a URL with what you want, and it returns an image that renders in most markdown environments that allow external images (GitHub, GitLab, Obsidian, etc.).
 
-**Powered by Cloudflare Workers ⚡**
+- 🎨 **Icons** — arrange your tech stack in a clean, customizable row
+- 🎴 **Cards** — turn a project, game, or wiki into a card with a cover image, title, description, and live GitHub stats
 
-## Quick Example
+No setup, no API keys, no build steps.
 
-```markdown
-![My Skills](https://charmly.amrelmahdy001-b28.workers.dev/icons?i=swift,typescript,react,go,flask&perline=5)
-```
-
-![My Skills](https://charmly.amrelmahdy001-b28.workers.dev/icons?i=swift,typescript,react,go,flask&perline=5)
+> ⚡ **Actively in development** — new features ship regularly. See [releases](https://github.com/amr-elmahdy/charmly/releases) for what's new.
 
 ---
 
-## Usage Guide
+## Quick Start
 
-### Basic Usage
-Simply replace `i=` with comma-separated icon names:
-```markdown
-![Skills](https://charmly.amrelmahdy001-b28.workers.dev/icons?i=javascript,typescript,html,css)
-```
-![Skills](https://charmly.amrelmahdy001-b28.workers.dev/icons?i=javascript,typescript,html,css)
+**Icons:**
 
-### Icons Per Line
-```markdown
-![Skills](https://charmly.amrelmahdy001-b28.workers.dev/icons?i=aws,figma,azure,cloudflare,angular,npm&perline=3)
 ```
-![Skills](https://charmly.amrelmahdy001-b28.workers.dev/icons?i=aws,figma,azure,cloudflare,angular,npm&perline=3)
+![Tech stack](https://charmly.read-me.workers.dev/icons?i=javascript,react,docker)
+```
 
-### Custom Size
-```markdown
-![Skills](https://charmly.amrelmahdy001-b28.workers.dev/icons?i=javascript,python,java,go&size=64)
-```
-![Skills](https://charmly.amrelmahdy001-b28.workers.dev/icons?i=javascript,python,java,go&size=64)
+**Cards:**
 
-### Custom Colors & Style
-```markdown
-![Skills](https://charmly.amrelmahdy001-b28.workers.dev/icons?i=cloudflare,swift,supabase&bgcolor=212125&radius=24&gap=20)
 ```
-![Skills](https://charmly.amrelmahdy001-b28.workers.dev/icons?i=cloudflare,swift,supabase&bgcolor=212125&radius=24&gap=20)
+![My Project](https://charmly.read-me.workers.dev/card?title=My+Project&img=https://raw.githubusercontent.com/amr-elmahdy/amr-elmahdy/main/assets/charmly-500.jpg)
+```
 
-### Without Background
-```markdown
-![Skills](https://charmly.amrelmahdy001-b28.workers.dev/icons?i=git,firebase,gitlab&bg=false&size=48)
-```
-![Skills](https://charmly.amrelmahdy001-b28.workers.dev/icons?i=git,firebase,gitlab&bg=false&size=48)
-
-### Centered Display
-```html
-<p align="center">
-  <img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=git,kubernetes,gitlab,c,github&size=52&radius=10" />
-</p>
-```
-<p align="center">
-  <img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=git,kubernetes,gitlab,c,github&size=52&radius=10" />
-</p>
+Drop either into a README and it renders. For customization, see the [Icons](./docs/ICONS.md) and [Cards](./docs/CARDS.md) docs.
 
 ---
 
-## Parameters
+## 🎨 Icons
 
-| Parameter | Description | Range | Default |
-|-----------|-------------|-------|---------|
-| `i` | Comma-separated icon names **(required)** | — | — |
-| `perline` | Icons per line | 1–50 | All in one line |
-| `size` | Icon size (pixels) | 16–128 | 48 |
-| `gap` | Space between icons (pixels) | 0–32 | 8 |
-| `radius` | Corner radius (pixels) | 0–24 | 12 |
-| `bg` | Show background box | true/false | true |
-| `bgcolor` | Background color (hex) | #RGB or #RRGGBB | #1a1b2e |
+1,028 icons across 50+ categories. Every icon renders on-demand from a URL — no setup, no API key.
 
-**Example combinations:**
-```
-?i=js,html,css&size=32&perline=3&gap=10
-?i=python,java&bgcolor=ff6b6b&radius=20
-?i=react,vue&size=56&bg=false
-```
+### Default
 
----
+![Skills](https://charmly.read-me.workers.dev/icons?i=html,css,csharp,cplusplus,c&perline=5)
 
-## Features
+### Soft — rounded corners, airy spacing
 
-✅ **1,028+ Icons** — Wide coverage of tech stacks  
-✅ **Dynamic SVG Generation** — Icons generated on-demand  
-✅ **Highly Customizable** — Size, spacing, colors, and layout  
-✅ **Rate Limited** — 100 requests per minute per IP  
-✅ **Cached** — 60-second cache for performance  
-✅ **CORS Enabled** — Works across domains  
-✅ **No Background Option** — Display icons without boxes  
+![Skills](https://charmly.read-me.workers.dev/icons?i=javascript,typescript,kotlin,swift,webassembly,stimulus,keystone,appwrite&gap=12&radius=24&perline=5)
+
+### Bold — flat edges, tight grid, custom dark background
+
+![Skills](https://charmly.read-me.workers.dev/icons?i=svelte,angular,react,nestjs,django&size=58&gap=0&radius=0&bgcolor=1c1c3c&perline=5)
+
+### Highlights
+
+- 🎯 **1,028 icons** across 50+ categories
+- 🎨 **Full visual control** — size, spacing, radius, and background color
+- 🚫 **Transparent or solid** — hide the background, or set any hex color
+- 📐 **Flexible layouts** — control icons per line, up to 50 icons per URL
+
+[📖 Icons guide](./docs/ICONS.md) · [🎨 Full icons list](./docs/ICONS-LIST.md)
 
 ---
 
-## Available Icons
+## 🎴 Cards
 
-1028+ icons across 50+ categories. Use the icon `id`: `?i=javascript,react,docker`
+Cover image, title, description, and live GitHub widgets — all in one SVG card. Works for projects, games, and wikis.
 
-<table>
-  <tbody>
-    <tr>
-      <td align="center"><code>javascript</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=javascript&perline=1" alt="javascript" width="48" height="48"></td>
-      <td align="center"><code>typescript</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=typescript&perline=1" alt="typescript" width="48" height="48"></td>
-      <td align="center"><code>python</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=python&perline=1" alt="python" width="48" height="48"></td>
-    </tr>
-    <tr>
-      <td align="center"><code>java</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=java&perline=1" alt="java" width="48" height="48"></td>
-      <td align="center"><code>csharp</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=csharp&perline=1" alt="csharp" width="48" height="48"></td>
-      <td align="center"><code>go</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=go&perline=1" alt="go" width="48" height="48"></td>
-    </tr>
-    <tr>
-      <td align="center"><code>rust</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=rust&perline=1" alt="rust" width="48" height="48"></td>
-      <td align="center"><code>php</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=php&perline=1" alt="php" width="48" height="48"></td>
-      <td align="center"><code>swift</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=swift&perline=1" alt="swift" width="48" height="48"></td>
-    </tr>
-    <tr>
-      <td align="center"><code>kotlin</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=kotlin&perline=1" alt="kotlin" width="48" height="48"></td>
-      <td align="center"><code>dart</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=dart&perline=1" alt="dart" width="48" height="48"></td>
-      <td align="center"><code>cplusplus</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=cplusplus&perline=1" alt="cplusplus" width="48" height="48"></td>
-    </tr>
-    <tr>
-      <td align="center"><code>react</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=react&perline=1" alt="react" width="48" height="48"></td>
-      <td align="center"><code>vue</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=vue&perline=1" alt="vue" width="48" height="48"></td>
-      <td align="center"><code>angular</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=angular&perline=1" alt="angular" width="48" height="48"></td>
-    </tr>
-    <tr>
-      <td align="center"><code>svelte</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=svelte&perline=1" alt="svelte" width="48" height="48"></td>
-      <td align="center"><code>nextjs</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=nextjs&perline=1" alt="nextjs" width="48" height="48"></td>
-      <td align="center"><code>nuxtjs</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=nuxtjs&perline=1" alt="nuxtjs" width="48" height="48"></td>
-    </tr>
-    <tr>
-      <td align="center"><code>tailwindcss</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=tailwindcss&perline=1" alt="tailwindcss" width="48" height="48"></td>
-      <td align="center"><code>bootstrap</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=bootstrap&perline=1" alt="bootstrap" width="48" height="48"></td>
-      <td align="center"><code>sass</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=sass&perline=1" alt="sass" width="48" height="48"></td>
-    </tr>
-    <tr>
-      <td align="center"><code>redux</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=redux&perline=1" alt="redux" width="48" height="48"></td>
-      <td align="center"><code>materialui</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=materialui&perline=1" alt="materialui" width="48" height="48"></td>
-      <td align="center"><code>storybook</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=storybook&perline=1" alt="storybook" width="48" height="48"></td>
-    </tr>
-    <tr>
-      <td align="center"><code>nodejs</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=nodejs&perline=1" alt="nodejs" width="48" height="48"></td>
-      <td align="center"><code>express</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=express&perline=1" alt="express" width="48" height="48"></td>
-      <td align="center"><code>nestjs</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=nestjs&perline=1" alt="nestjs" width="48" height="48"></td>
-    </tr>
-    <tr>
-      <td align="center"><code>django</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=django&perline=1" alt="django" width="48" height="48"></td>
-      <td align="center"><code>flask</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=flask&perline=1" alt="flask" width="48" height="48"></td>
-      <td align="center"><code>fastapi</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=fastapi&perline=1" alt="fastapi" width="48" height="48"></td>
-    </tr>
-    <tr>
-      <td align="center"><code>spring</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=spring&perline=1" alt="spring" width="48" height="48"></td>
-      <td align="center"><code>laravel</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=laravel&perline=1" alt="laravel" width="48" height="48"></td>
-      <td align="center"><code>graphql</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=graphql&perline=1" alt="graphql" width="48" height="48"></td>
-    </tr>
-    <tr>
-      <td align="center"><code>postgresql</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=postgresql&perline=1" alt="postgresql" width="48" height="48"></td>
-      <td align="center"><code>mysql</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=mysql&perline=1" alt="mysql" width="48" height="48"></td>
-      <td align="center"><code>mongodb</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=mongodb&perline=1" alt="mongodb" width="48" height="48"></td>
-    </tr>
-    <tr>
-      <td align="center"><code>redis</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=redis&perline=1" alt="redis" width="48" height="48"></td>
-      <td align="center"><code>sqlite</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=sqlite&perline=1" alt="sqlite" width="48" height="48"></td>
-      <td align="center"><code>supabase</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=supabase&perline=1" alt="supabase" width="48" height="48"></td>
-    </tr>
-    <tr>
-      <td align="center"><code>docker</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=docker&perline=1" alt="docker" width="48" height="48"></td>
-      <td align="center"><code>kubernetes</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=kubernetes&perline=1" alt="kubernetes" width="48" height="48"></td>
-      <td align="center"><code>terraform</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=terraform&perline=1" alt="terraform" width="48" height="48"></td>
-    </tr>
-    <tr>
-      <td align="center"><code>aws</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=aws&perline=1" alt="aws" width="48" height="48"></td>
-      <td align="center"><code>azure</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=azure&perline=1" alt="azure" width="48" height="48"></td>
-      <td align="center"><code>googlecloud</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=googlecloud&perline=1" alt="googlecloud" width="48" height="48"></td>
-    </tr>
-    <tr>
-      <td align="center"><code>firebase</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=firebase&perline=1" alt="firebase" width="48" height="48"></td>
-      <td align="center"><code>vercel</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=vercel&perline=1" alt="vercel" width="48" height="48"></td>
-      <td align="center"><code>cloudflare</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=cloudflare&perline=1" alt="cloudflare" width="48" height="48"></td>
-    </tr>
-    <tr>
-      <td align="center"><code>nginx</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=nginx&perline=1" alt="nginx" width="48" height="48"></td>
-      <td align="center"><code>githubactions</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=githubactions&perline=1" alt="githubactions" width="48" height="48"></td>
-      <td align="center"><code>grafana</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=grafana&perline=1" alt="grafana" width="48" height="48"></td>
-    </tr>
-    <tr>
-      <td align="center"><code>tensorflow</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=tensorflow&perline=1" alt="tensorflow" width="48" height="48"></td>
-      <td align="center"><code>pytorch</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=pytorch&perline=1" alt="pytorch" width="48" height="48"></td>
-      <td align="center"><code>huggingface</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=huggingface&perline=1" alt="huggingface" width="48" height="48"></td>
-    </tr>
-    <tr>
-      <td align="center"><code>openai</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=openai&perline=1" alt="openai" width="48" height="48"></td>
-      <td align="center"><code>langchain</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=langchain&perline=1" alt="langchain" width="48" height="48"></td>
-      <td align="center"><code>pandas</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=pandas&perline=1" alt="pandas" width="48" height="48"></td>
-    </tr>
-    <tr>
-      <td align="center"><code>flutter</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=flutter&perline=1" alt="flutter" width="48" height="48"></td>
-      <td align="center"><code>reactnative</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=reactnative&perline=1" alt="reactnative" width="48" height="48"></td>
-      <td align="center"><code>android</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=android&perline=1" alt="android" width="48" height="48"></td>
-    </tr>
-    <tr>
-      <td align="center"><code>git</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=git&perline=1" alt="git" width="48" height="48"></td>
-      <td align="center"><code>github</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=github&perline=1" alt="github" width="48" height="48"></td>
-      <td align="center"><code>gitlab</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=gitlab&perline=1" alt="gitlab" width="48" height="48"></td>
-    </tr>
-    <tr>
-      <td align="center"><code>vscode</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=vscode&perline=1" alt="vscode" width="48" height="48"></td>
-      <td align="center"><code>vim</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=vim&perline=1" alt="vim" width="48" height="48"></td>
-      <td align="center"><code>intellij</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=intellij&perline=1" alt="intellij" width="48" height="48"></td>
-    </tr>
-    <tr>
-      <td align="center"><code>npm</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=npm&perline=1" alt="npm" width="48" height="48"></td>
-      <td align="center"><code>vite</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=vite&perline=1" alt="vite" width="48" height="48"></td>
-      <td align="center"><code>webpack</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=webpack&perline=1" alt="webpack" width="48" height="48"></td>
-    </tr>
-    <tr>
-      <td align="center"><code>figma</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=figma&perline=1" alt="figma" width="48" height="48"></td>
-      <td align="center"><code>postman</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=postman&perline=1" alt="postman" width="48" height="48"></td>
-      <td align="center"><code>jest</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=jest&perline=1" alt="jest" width="48" height="48"></td>
-    </tr>
-    <tr>
-      <td align="center"><code>cypress</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=cypress&perline=1" alt="cypress" width="48" height="48"></td>
-      <td align="center"><code>playwright</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=playwright&perline=1" alt="playwright" width="48" height="48"></td>
-      <td align="center"><code>vitest</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=vitest&perline=1" alt="vitest" width="48" height="48"></td>
-    </tr>
-    <tr>
-      <td align="center"><code>eslint</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=eslint&perline=1" alt="eslint" width="48" height="48"></td>
-      <td align="center"><code>prettier</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=prettier&perline=1" alt="prettier" width="48" height="48"></td>
-      <td align="center"><code>linux</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=linux&perline=1" alt="linux" width="48" height="48"></td>
-    </tr>
-    <tr>
-      <td align="center"><code>ubuntu</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=ubuntu&perline=1" alt="ubuntu" width="48" height="48"></td>
-      <td align="center"><code>windows</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=windows&perline=1" alt="windows" width="48" height="48"></td>
-      <td align="center"><code>macos</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=macos&perline=1" alt="macos" width="48" height="48"></td>
-    </tr>
-    <tr>
-      <td align="center"><code>apple</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=apple&perline=1" alt="apple" width="48" height="48"></td>
-      <td align="center"><code>google</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=google&perline=1" alt="google" width="48" height="48"></td>
-      <td align="center"><code>html</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=html&perline=1" alt="html" width="48" height="48"></td>
-    </tr>
-    <tr>
-      <td align="center"><code>css</code></td>
-      <td align="center"><img src="https://charmly.amrelmahdy001-b28.workers.dev/icons?i=css&perline=1" alt="css" width="48" height="48"></td>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
-  </tbody>
-</table>
+### For Developer Repos
 
-✨ **See the full list of 1028+ icons in [ICONS.md](ICONS.md)**
+Live GitHub stats — stars, version, and primary language.
+
+[![Charmly](https://charmly.read-me.workers.dev/card?title=Charmly&desc=An+icon+API+for+READMEs+%E2%80%94+drop+a+URL%2C+get+an+icon.+Now+growing+with+widgets+and+more+display+tools.+Built+on+Cloudflare+Workers.&img=https://raw.githubusercontent.com/amr-elmahdy/amr-elmahdy/refs/heads/main/assets/charmly-500.jpg&c=140035,100030&tc=B048D0&dc=D0C0D0&tl=true&im=smooth&co=smooth&tr=stars:amr-elmahdy/charmly&br=version:amr-elmahdy/charmly&bl=lan:amr-elmahdy/charmly)](https://github.com/amr-elmahdy/charmly)
+
+### For Game Development
+
+Release state and genre tags.
+
+[![The Last Lantern](https://charmly.read-me.workers.dev/card?title=The+Last+Lantern&desc=You+have+20+seconds+of+light.+Make+them+count.+A+2D+horror+exploration+game+set+in+your+late+grandmother%27s+abandoned+mansion.+Made+for+GMTK+2026.&img=https://raw.githubusercontent.com/amr-elmahdy/amr-elmahdy/refs/heads/main/assets/the-last-lantern-500.jpg&c=0a0a0f,2a1a0a&tc=fef3c7&dc=a1a1aa&tl=true&im=smooth&co=smooth&tr=state:release&bl=badges:Horror,Exploration,GMTK+2026)](https://github.com/Orpita-Community/the-last-lantern)
+
+### For Encyclopedias & Knowledge Bases
+
+Version, status, and topic badges.
+
+[![Jurdian Cipher Wiki](https://charmly.read-me.workers.dev/card?title=Jurdian+Cipher+Wiki&desc=A+large+encyclopedia+of+ciphers+%E2%80%94+classical%2C+modern%2C+and+experimental+%E2%80%94+with+study%2C+analysis%2C+and+usage+for+each+entry.+Written+in+Markdown+for+Obsidian.+Currently+in+active+development.&img=https://raw.githubusercontent.com/amr-elmahdy/amr-elmahdy/refs/heads/main/assets/jurdian-500.jpg&c=303030,000000&tc=C0A038&dc=786848&tl=true&im=smooth&co=smooth&tr=state:in-development&bl=badges:Ciphers,Cryptography,Wiki,Jurdian)](https://github.com/Jurdian-Project/jurdian-cipher-wiki)
+
+### Highlights
+
+- 🖼️ **Cover image** with 3 merge styles — cut, line, and smooth
+- 🎨 **Background gradients** — solid color or two-color blend
+- ✍️ **Independent text colors** — title and description styled separately
+- 🏷️ **Static Widgets** — release status and category badges
+- 🔢 **Live GitHub data** — stars, version, and language update automatically
+- 📐 **Flexible card layout** — 3 panel widths and 4 cover‑image widths
+
+
+[📖 Cards guide](./docs/CARDS.md) · [🖼️ Live showcase](./docs/CARDS.md#-Live-Showcase)
 
 ---
 
-## How It Works
+## Support
 
-1. Icon SVGs stored in `icons/` folder
-2. `build-icons.js` extracts SVG data to `dist/icons.json`
-3. Cloudflare Worker generates customized SVG on-demand:
-   - `src/worker.js` — routing and rate limiting
-   - `src/icons.js` — icon rendering
-   - `src/utils.js` — shared helpers
-4. Parameters control size, spacing, colors, and layout
-5. Response cached for 60 seconds
+Charmly is **free and open source**. The best ways to support it:
+
+- ⭐ **Star the repo** — helps others discover it
+- 🐛 **Report bugs** — makes the project better
+- 💡 **Suggest features** — shapes the roadmap
+- 🔗 **Share it** — tell a friend who writes READMEs
+
+Every star and share makes a real difference.
+
+---
+
+## 🙏 Acknowledgments
+
+Charmly wouldn't exist without these incredible projects and platforms:
+
+- **☁️ [Cloudflare Workers](https://workers.cloudflare.com/)** — the edge runtime that powers Charmly
+- **🎨 [theSVG](https://thesvg.org/)** — a primary source for many of the icons in this library
+- **💡 [skill-icons](https://github.com/tandpfun/skill-icons)** — the original inspiration
+- **🌐 [GitHub](https://github.com/)** — for hosting the code and providing free CI/CD
+
+---
+
+## Documentation
+
+| | |
+|---|---|
+| 🎨 **Icons** | [Guide & Parameters](./docs/ICONS.md) |
+| 📋 **Icons List** | [All 1,028 Icons](./docs/ICONS-LIST.md) |
+| 🎴 **Cards** | [Guide & Examples](./docs/CARDS.md) |
+| 📝 **Changelog** | [Version History](./CHANGELOG.md) |
+| ❓ **FAQ** | [Common Questions](./docs/FAQ.md) |
+| ⚖️ **Legal** | [License](./LICENSE) · [Notices](./NOTICE.md) |
+| 🛠️ **Contributing** | [How to contribute](./CHANGELOG.md) |
+| 🔒 **Security** | [Report a vulnerability](./SECURITY.md) |
 
 ---
 
 ## Contributing
 
-Contributions welcome! To suggest an icon:
-- Open an issue, or
-- Add the SVG to `icons/` folder and submit a PR
+Contributions are welcome — new icons, bug fixes, or documentation improvements.
+
+- 💡 **Suggest an icon:** [open an issue](https://github.com/amr-elmahdy/charmly/issues/new?template=icon_request.md)
+- 🐛 **Report a bug:** [open an issue](https://github.com/amr-elmahdy/charmly/issues/new?template=bug_report.md)
+- 🚀 **Submit a PR:** see [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ---
 
 ## License
 
-MIT License — See [LICENSE](LICENSE) for details.
+MIT — see [LICENSE](./LICENSE) for details.
 
-Icons are trademarks of their respective owners — See [NOTICE.md](NOTICE.md).
-
----
-
-## Links
-
-- [Full Icon List](ICONS.md)
-- [Changelog](CHANGELOG.md)
-- [Third-Party Notices](NOTICE.md)
-- [License](LICENSE)
+Icons are trademarks of their respective owners — see [NOTICE.md](./NOTICE.md).
 
 ---
 
-<p align="center">Made by <a href="https://github.com/amrelmahdy001">amrelmahdy001</a></p>
+<div align="center">
+
+**Built with ☁️ Cloudflare Workers**
+
+Made by [@amr-elmahdy](https://github.com/amr-elmahdy)
+
+[Report an issue](https://github.com/amr-elmahdy/charmly/issues) · [Star on GitHub](https://github.com/amr-elmahdy/charmly)
+
+</div>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Charmly Icons Catalog</title>
+<style>
+:root{--bg:#f6f7f9;--card:#ffffff;--text:#1d2330;--muted:#6b7385;--border:#e2e5ec;--accent:#4f46e5}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1218;--card:#181c25;--text:#e6e9f0;--muted:#8a93a6;--border:#2a3040;--accent:#818cf8}}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text)}
+header{position:sticky;top:0;z-index:10;background:var(--card);border-bottom:1px solid var(--border);padding:14px 20px}
+h1{font-size:20px;margin:0 0 10px}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+input[type=search]{flex:1;min-width:220px;padding:9px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:15px}
+.count{color:var(--muted);font-size:13px}
+nav{display:flex;gap:6px;overflow-x:auto;padding:10px 20px;border-bottom:1px solid var(--border);background:var(--card)}
+nav a{white-space:nowrap;font-size:13px;padding:5px 10px;border-radius:999px;border:1px solid var(--border);color:var(--text);text-decoration:none}
+nav a:hover{border-color:var(--accent);color:var(--accent)}
+main{padding:20px}
+body.has-basket main{padding-bottom:150px}
+section{margin-bottom:34px;scroll-margin-top:150px}
+section h2{font-size:17px;margin:0 0 12px;display:flex;align-items:baseline;gap:8px}
+section h2 span{font-size:12px;color:var(--muted);font-weight:normal}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+.card{position:relative;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 8px 10px;text-align:center;cursor:pointer;transition:.15s}
+.card:hover{border-color:var(--accent);transform:translateY(-1px)}
+.card.sel{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.card img,.card .ph{width:40px;height:40px;margin:0 auto 8px;display:block;object-fit:contain}
+.card .ph{display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:10px;border:1px dashed var(--border);border-radius:8px}
+.card code{font-size:12px;word-break:break-all;direction:ltr;display:block;font-family:ui-monospace,Menlo,Consolas,monospace}
+.add{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:15px;line-height:1;cursor:pointer;padding:0}
+.card.sel .add{background:var(--accent);color:#fff;border-color:var(--accent)}
+.hidden{display:none!important}
+#basket{position:fixed;bottom:0;left:0;right:0;z-index:20;background:var(--card);border-top:1px solid var(--border);padding:12px 20px;display:none;gap:10px;align-items:center;flex-wrap:wrap;box-shadow:0 -4px 20px rgba(0,0,0,.08)}
+#basket.show{display:flex}
+#basket .info{font-size:14px;color:var(--muted)}
+#basket code{flex:1;min-width:200px;direction:ltr;font-size:13px;word-break:break-all;background:var(--bg);padding:8px;border-radius:6px;font-family:ui-monospace,Menlo,Consolas,monospace}
+button{padding:8px 14px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;font-size:14px}
+button.ghost{background:transparent;color:var(--accent)}
+.toast{position:fixed;top:16px;left:50%;transform:translateX(-50%);background:#111;color:#fff;padding:8px 14px;border-radius:8px;font-size:14px;opacity:0;transition:.2s;pointer-events:none;z-index:30}
+.toast.show{opacity:1}
+.empty{color:var(--muted);text-align:center;padding:40px 0;display:none}
+</style>
+</head>
+<body>
+<header>
+  <h1>Charmly Icons Catalog <span class="count" id="total"></span></h1>
+  <div class="controls">
+    <input type="search" id="q" placeholder="Search by icon id, e.g. react, aws, docker..." autocomplete="off">
+    <span class="count" id="shown"></span>
+  </div>
+</header>
+<nav id="nav"></nav>
+<main>
+  <div id="content"></div>
+  <div class="empty" id="empty">No icons match your search.</div>
+</main>
+
+<div id="basket">
+  <span class="info"><b id="selCount">0</b> selected</span>
+  <code id="url"></code>
+  <button id="copyUrl">Copy URL</button>
+  <button id="copyIds" class="ghost">Copy IDs</button>
+  <button id="clear" class="ghost">Clear</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const BASE = "https://charmly.read-me.workers.dev/icons";
+
+const DATA = [
+{t:"Programming Languages",s:"javascript python java typescript csharp cplusplus c php go rust kotlin swift ruby dart scala elixir haskell clojure r lua julia zig nim solidity bash powershell matlab perl groovy objectivec fsharp visualbasic erlang fortran cobol crystal ocaml racket prolog scheme v haxe elm purescript reason lisp assembly labview autohotkey carbon gleam ada awk wolframlanguage apex delphi coffeescript nix apl vala opencl ring redlang dyalog"},
+{t:"Runtimes, Compilers & VMs",s:"nodejs dotnet bun deno webassembly wasmer v8engine pypy mono hermesengine spidermonkey llvm gcc"},
+{t:"Markup, Data Formats & Styling",s:"html css sass less stylus postcss tailwindcss bootstrap styledcomponents xml yaml toml json svg jinja2 liquid mjml scss cssmodules unocss windicss bulma foundationcss materializecss"},
+{t:"Frontend Frameworks & Libraries",s:"react vue angular svelte nextjs solidjs preact ember backbone meteor jquery alpinejs htmx lit stencil qwik mithril riot marko extjs sencha inferno aurelia stimulus hotwire freshdeno blazor nx turborepo vike imba"},
+{t:"State Management",s:"redux mobx recoil jotai pinia ngrx getx zustand xstate swr reactquery tanstackquery"},
+{t:"UI Component Libraries",s:"materialui antdesign chakraui shadcnui radixui headlessui vuetify elementui primevue semanticui storybook nextui mantine daisyui blueprintjs grommet reactbootstrap primereact primeng devextreme"},
+{t:"Animation, Graphics & 3D",s:"framermotion gsap threejs d3js babylonjs p5js konvajs pixijs fabricjs paperjs motionone reactspring velocityjs rive"},
+{t:"Charting & Data Visualization",s:"chartjs highcharts plotly echarts visx vega vegalite billboardjs observableplot"},
+{t:"Icon Libraries & Web Fonts",s:"fontawesome lucide phosphoricons iconify simpleicons devicons"},
+{t:"Templating Engines",s:"handlebars pug ejs nunjucks"},
+{t:"Backend Frameworks",s:"express nestjs django flask spring laravel fastify remix nuxtjs astro gatsby sveltekit koa fastapi gin fiber actix rocket adonisjs symfony codeigniter cakephp quarkus vertx trpc apollo phoenixframework moleculer meteor-backend strapi keystone directus payload blitz redwood trpc-server phoenix rails springboot dropwizard ktor vapor loopback hono elysiajs h3 encore iris tide"},
+{t:"API Tools & Protocols",s:"swagger postman insomnia graphql grpc openapi hasura postgraphile hoppscotch brunoapi stoplight mulesoft"},
+{t:"Relational Databases",s:"mysql postgresql sqlite mariadb mssql oracle cockroachdb teradata firebirdsql"},
+{t:"NoSQL, Distributed & Wide-Column DBs",s:"mongodb cassandra dynamodb couchdb arangodb rethinkdb faunadb scylladb riak tidb yugabyte vitess planetscale neon timescaledb clickhouse duckdb hive couchbase hbase bigtable cosmosdb dgraph surrealdb edgedb rocksdb foundationdb singlestore"},
+{t:"Caching, Search & Vector Stores",s:"redis elasticsearch opensearch memcached aerospike pinecone weaviate chroma qdrant influxdb algolia meilisearch typesense solr sphinxsearch milvus vespa"},
+{t:"ORMs & Query Builders",s:"prisma typeorm sequelize mongoose knex drizzle sqlalchemy hibernate neo4j ecto doctrineorm"},
+{t:"Backend-as-a-Service & Serverless",s:"firebase firestore supabase appwrite pocketbase nhost convex awsamplify awslambda cloudflareworkers"},
+{t:"Message Queues & Event Streaming",s:"kafka rabbitmq nats pulsar"},
+{t:"Mobile & Cross-Platform",s:"flutter reactnative ionic capacitor nativescript xamarin android androidstudio ios xcode expo jetpackcompose uikit cocoapods fastlane googleplayconsole appstoreconnect cordova"},
+{t:"Cloud Providers & Platforms",s:"aws azure googlecloud digitalocean linode vultr alibabacloud heroku vercel netlify railway render fly koyeb cloudflare salesforce ovhcloud scaleway hetzner upcloud contabo tencentcloud huaweicloud backblaze"},
+{t:"Containers & Orchestration",s:"docker kubernetes podman containerd helm rancher openshift k3s nomad istio linkerd consul skaffold kaniko argocd cilium"},
+{t:"Infrastructure as Code",s:"terraform ansible pulumi packer vagrant chef puppet saltstack crossplane terragrunt opentofu"},
+{t:"CI/CD & Automation",s:"githubactions jenkins circleci argo flux tekton spinnaker buildkite drone concourse semaphore appveyor bamboo teamcity travisci harness octopusdeploy codefresh gocd bitrise"},
+{t:"Monitoring & Observability",s:"prometheus grafana kibana datadog newrelic sentry logstash honeycomb jaeger opentelemetry splunk dynatrace appdynamics pagerduty opsgenie statuspage betterstack checkly fluentd fluentbit"},
+{t:"Web Servers, Proxies & Networking",s:"nginx apache traefik caddy kong envoy gunicorn uwsgi tomcat wireguard openvpn tailscale"},
+{t:"Version Control & Git Hosting",s:"git github gitlab bitbucket gitea gitkraken sourcetree gitpod sourcehut azuredevops perforce mercurial subversion forgejo"},
+{t:"IDEs & Code Editors",s:"vscode vim intellij pycharm webstorm phpstorm goland rubymine clion rider eclipse netbeans sublime atom neovim emacs stackblitz codesandbox replit zededitor cursorai windsurfide jetbrainsfleet codeblocks lapce helixeditor microeditor nanoeditor notepadplusplus"},
+{t:"Terminal & Shell",s:"iterm hyper alacritty tmux warpterminal wezterm zsh fishshell ohmyzsh starshipprompt"},
+{t:"Package Managers & Build Tools",s:"npm yarn pnpm pip maven gradle composer nuget gem brew chocolatey vite webpack rollup parcel esbuild babel npmregistry pypi mavencentral rubygems packagist quay artifactory verdaccio turbopack swcrust snowpack grunt gulp bower conda poetrypython uvpython bazel cmake maketool nvm"},
+{t:"Testing, QA & Code Quality",s:"jest eslint prettier cypress playwright mocha vitest selenium puppeteer testinglibrary karma jasmine chai appium testcafe k6 jmeter gatling locust sonarqube codeclimate stylelint junit pytestframework rspec robotframework cucumber webdriverio nightwatchjs rubocop mypy blackformatter rufflinter commitlint semanticrelease"},
+{t:"AI & Machine Learning",s:"tensorflow pytorch keras scikitlearn opencv pandas numpy jupyter mlflow langchain huggingface openai anthropic llamaindex streamlit gradio anaconda kaggle googlecolab weightsandbiases wandb cuda nvidia ollama ray dask polars matplotlib seaborn mistralai cohere googlegemini stabilityai midjourney runwayml elevenlabs perplexityai xaigrok deepseek qwenai spacy xgboost onnxruntime paddlepaddle crewai vllm comfyui replicateai modallabs togetherai"},
+{t:"Data Science, Analytics & BI",s:"tableau looker metabase superset redash spark hadoop flink airflow dbt snowflake databricks bigquery qlikview domobi apachenifi dagster prefectio airbyte matillion talend informatica alteryx spssibm minitab orangedatamining knime lookerstudio mixpanel amplitude heapanalytics hotjar"},
+{t:"Security, Auth & Identity",s:"auth0 keycloak snyk owasp burpsuite metasploit wireshark letsencrypt okta jwt oauth vault 1password bitwarden lastpass dashlane keeper hashicorpvault sonarqubecloud checkmarx nordvpn protonvpn expressvpn surfshark malwarebytes kaspersky norton mcafee bitdefender crowdstrike paloaltonetworks fortinet pingidentity onelogin teleportsecurity yubikey googleauthenticator authy qualys hashcat"},
+{t:"Game Development",s:"unity unrealengine godot gamemaker construct bevy raylib love2d cocos2d phaserjs cryengine sourceengine libgdx monogame playcanvas renpy"},
+{t:"CMS & Website Builders",s:"wordpress joomla drupal webflow wix squarespace ghost contentful sanity typo3 umbraco octobercms processwire craftcms builderio carrd elementor"},
+{t:"E-Commerce Platforms",s:"shopify magento woocommerce bigcommerce prestashop medusajs shopware gumroad"},
+{t:"Operating Systems",s:"ubuntu debian fedora centos arch manjaro mint redhat alpine kali windows macos freebsd opensuse rockylinux almalinux popos elementary zorin linux nixos gentoo slackware voidlinux endeavouros mxlinux deepin solusos qubesos tailsos openbsd netbsd"},
+{t:"Blockchain & Web3",s:"ethereum solana polygon binance bitcoin ipfs web3js ethers hardhat metamask cardano polkadot avalanche chainlink opensea coinbase alchemy near algorand tezos hedera ton optimism basechain suinetwork ripplexrp litecoin dogecoin monero walletconnect trustwallet thirdweb"},
+{t:"Hardware, IoT & Embedded",s:"arduino raspberrypi platformio intel amd qualcomm micropython node-red homeassistant adafruit sparkfun tinkercad kicad eaglecad mqttprotocol zigbee matterprotocol zephyros"},
+{t:"Documentation & Static Site Generators",s:"markdown mdx docusaurus vitepress readthedocs gitbook hugo jekyll latex overleaf pandoc sphinxdocs doxygen docsify nextra zolassg eleventy hexo"},
+{t:"Productivity & Note-Taking",s:"notion obsidian roam logseq todoist evernote onenote googlekeep notesnook joplinnotes simplenote anytype"},
+{t:"Project Management & Collaboration",s:"trello asana linear airtable mondaycom clickup jira basecamp shortcutapp hiveproject productboard miro muralapp"},
+{t:"Communication & Messaging",s:"slack discord telegram whatsapp zoom googlemeet webexcisco skype signalapp viber wechat lineapp mattermost frontapp intercom zendesk"},
+{t:"Design & Creative Tools",s:"figma sketch adobexd photoshop illustrator aftereffects premiere blender canva invision framerdesign affinitydesigner affinityphoto coreldraw davinciresolve cinema4d mayaautodesk houdinifx krita"},
+{t:"Social Media & Content",s:"twitter x facebook instagram linkedin youtube twitch tiktok reddit pinterest snapchat mastodon threads bluesky medium devto hashnode substack patreon kofi producthunt stackoverflow discourseforum quora stackexchange indiehackers tumblr flickr vsco behance dribbble dailymotion rumble letterboxd"},
+{t:"Video, Audio & Music",s:"vimeo obsstudio streamlabs audacityaudio protools soundcloud bandcamp mixcloud"},
+{t:"Marketing & Email",s:"mailchimp sendgrid postmarkapp mailgun hubspotmarketing brevo constantcontact googletagmanager googleads vwotesting"},
+{t:"Payments & Fintech",s:"stripe paypal squarepayments braintree razorpay adyen klarna afterpay wisetransfer revolut plaid coinbasecommerce"},
+{t:"Browsers",s:"googlechrome mozillafirefox safaribrowser microsoftedge bravebrowser operabrowser arcbrowser vivaldi"},
+{t:"Education & Learning",s:"coursera udemy edx khanacademy freecodecamp leetcode hackerrank codewars pluralsight eggheadio codecademy"},
+{t:"Robotics & Quantum",s:"rosrobotics gazebosim qiskit"},
+{t:"Office & Productivity Suites",s:"googledocs googlesheets googleslides libreoffice onlyoffice"},
+{t:"Brand & Company Icons",s:"google microsoft apple meta amazon netflix spotify adobe ibm sap vmware cisco dell hp lenovo samsung sony lgelectronics huawei xiaomi tesla spacex broadcom asus acer msi logitech nikon siemens bosch"}
+];
+
+const $ = id => document.getElementById(id);
+const selected = new Set();
+const cards = [];
+
+function iconUrl(id){ return `${BASE}?i=${encodeURIComponent(id)}&perline=1`; }
+
+function toast(msg){
+  const t = $("toast"); t.textContent = msg; t.classList.add("show");
+  clearTimeout(toast._t); toast._t = setTimeout(()=>t.classList.remove("show"), 1400);
+}
+
+async function copyText(text, msg){
+  try { await navigator.clipboard.writeText(text); }
+  catch(e){
+    const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta);
+    ta.select(); try{ document.execCommand("copy"); }catch(_){} ta.remove();
+  }
+  toast(msg);
+}
+
+function buildUrl(){
+  const ids = [...selected];
+  return ids.length ? `${BASE}?i=${ids.map(encodeURIComponent).join(",")}&perline=1` : "";
+}
+
+function refreshBasket(){
+  const n = selected.size;
+  $("selCount").textContent = n;
+  $("url").textContent = buildUrl();
+  $("basket").classList.toggle("show", n > 0);
+  document.body.classList.toggle("has-basket", n > 0);
+}
+
+function toggleSelect(id, card){
+  if(selected.has(id)){ selected.delete(id); card.classList.remove("sel"); }
+  else { selected.add(id); card.classList.add("sel"); }
+  refreshBasket();
+}
+
+function render(){
+  const content = $("content"), nav = $("nav");
+  let total = 0;
+  DATA.forEach((cat, idx) => {
+    const ids = cat.s.split(/\s+/).filter(Boolean);
+    total += ids.length;
+
+    const a = document.createElement("a");
+    a.href = `#cat-${idx}`; a.textContent = cat.t;
+    nav.appendChild(a);
+
+    const sec = document.createElement("section");
+    sec.id = `cat-${idx}`;
+    sec.dataset.cat = cat.t;
+    sec.innerHTML = `<h2>${cat.t} <span>${ids.length}</span></h2>`;
+    const grid = document.createElement("div");
+    grid.className = "grid";
+
+    ids.forEach(id => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.dataset.id = id.toLowerCase();
+      card.title = "Click to copy the id";
+      card.innerHTML = `
+        <button class="add" title="Add to selection">+</button>
+        <img src="${iconUrl(id)}" alt="" loading="lazy" onerror="this.outerHTML='<div class=ph>no preview</div>'">
+        <code>${id}</code>`;
+      card.addEventListener("click", e => {
+        if(e.target.classList.contains("add")){ e.stopPropagation(); toggleSelect(id, card); return; }
+        copyText(id, `Copied: ${id}`);
+      });
+      if(selected.has(id)) card.classList.add("sel");
+      grid.appendChild(card);
+      cards.push({card, sec, catEl: sec, id: id.toLowerCase()});
+    });
+
+    sec.appendChild(grid);
+    content.appendChild(sec);
+  });
+  $("total").textContent = `(${total} icons)`;
+}
+
+function filter(){
+  const q = $("q").value.trim().toLowerCase();
+  let shown = 0;
+  document.querySelectorAll("section").forEach(sec => {
+    let count = 0;
+    sec.querySelectorAll(".card").forEach(c => {
+      const match = !q || c.dataset.id.includes(q);
+      c.classList.toggle("hidden", !match);
+      if(match) count++;
+    });
+    sec.classList.toggle("hidden", count === 0);
+    shown += count;
+  });
+  $("shown").textContent = q ? `${shown} match(es)` : "";
+  $("empty").style.display = shown === 0 ? "block" : "none";
+}
+
+$("q").addEventListener("input", filter);
+$("copyUrl").addEventListener("click", () => copyText(buildUrl(), "URL copied"));
+$("copyIds").addEventListener("click", () => copyText([...selected].join(","), "IDs copied"));
+$("clear").addEventListener("click", () => {
+  selected.clear();
+  document.querySelectorAll(".card.sel").forEach(c => c.classList.remove("sel"));
+  refreshBasket();
+});
+
+render();
+refreshBasket();
+</script>
+</body>
+</html>
