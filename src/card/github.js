@@ -4,7 +4,7 @@
 
 const API_BASE = 'https://api.github.com';
 const CACHE_TTL_SECONDS = 3600; // 1 hour
-const USER_AGENT = 'Charmly/1.0 (+https://github.com/amrelmahdy001/Charmly)';
+const USER_AGENT = 'Charmly/1.0 (+https://github.com/amr-elmahdy/charmly)';
 
 // ============================================================
 // Public API
