@@ -2,5 +2,7 @@ name = "charmly"
 main = "src/worker.js"
 compatibility_date = "2024-01-01"
 
+preview_urls = true
+
 [build]
 command = "node build-icons.js"

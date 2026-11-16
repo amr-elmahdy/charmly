@@ -2,6 +2,19 @@
   "name": "charmly",
   "version": "1.2.0",
   "scripts": {
-    "build": "node build-icons.js"
+    "build": "node build-icons.js",
+    "preview": "wrangler versions upload --preview-alias staging",
+    "dev": "wrangler dev --live-reload"
+  },
+  "description": "<div align=\"center\">",
+  "main": "build-icons.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "wrangler": "^4.163.0"
   }
 }
